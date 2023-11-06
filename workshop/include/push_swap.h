@@ -5,5 +5,6 @@
 #include <stdlib.h>
 #include "../libft/includes/libft.h"
 
+void	err_relay(void);
 
 #endif
