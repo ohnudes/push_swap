@@ -1,18 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   node_util.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmaturan <nmaturan@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/06 19:49:22 by nmaturan          #+#    #+#             */
-/*   Updated: 2023/11/06 19:50:46 by nmaturan         ###   ########.fr       */
+/*   Created: 2023/11/07 15:07:09 by nmaturan          #+#    #+#             */
+/*   Updated: 2023/11/07 15:12:02 by nmaturan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
 
-void	err_relay(void)
+t_node	newnode(int *content)
 {
-	write(2, "error\n", 6);
+	t_node	*node;
+
+	node = (void *) malloc(sizeof(t_node));
+	if (!node)
+		return (NULL);
+	node->value = content;
 }
