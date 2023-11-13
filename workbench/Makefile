@@ -1,5 +1,16 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: nmaturan <nmaturan@student.42barcel>       +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2023/11/13 17:43:16 by nmaturan          #+#    #+#              #
+#    Updated: 2023/11/13 19:21:03 by nmaturan         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-# Nombre del programa
+# Pro
 NAME = push_swap
 
 # Flags al compilar
@@ -8,55 +19,32 @@ TESTFLAGS = -fsanitize=address -g
 
 # DIRs
 SRC_DIR = srcs/
-OBJ_DIR = objs/
 INC_DIR = include/
 LIBFT_DIR = libft/
 
-# Sources files
-SRC_FILE = init.c utils.c main.c
-OBJ_FILE = $(SRC_FILE:.c=.o)
-INC_FILE = push_swap.h
+# 
+SRC_FILE = maintest.c 
+INC_FILE = push_swap.h stack.h
 
-# Elements
+# Compiling elements
 SRC	= $(addprefix $(SRC_DIR), $(SRC_FILE))
-OBJ	= $(addprefix $(OBJ_DIR), $(OBJ_FILE))
 INC = $(addprefix $(INC_DIR), $(INC_FILE))
 LIBFT = $(addprefix $(LIBFT_DIR), libft.a)
 
-# Test
-TEST_DIR = test/
-TEST_FILE = main.c init.c utils.c
-TEST = $(addprefix $(TEST_DIR), $(TEST_FILE))
-TEST_OUT = p_swp
-
-# Flags for linking
-LNK = ar rc
-
-#### Compilacion del programa ####
+#### COMPILATION ####
 
 all: $(LIBFT) $(NAME) 
-
-#obj:
-#@mkdir -p $(OBJ_DIR)
 
 $(LIBFT):
 	@make -C $(LIBFT_DIR)
 
 $(NAME): $(INC) $(LIBFT)
 	@echo Creating program $(NAME)...
-	cc -o $(NAME) $(FLAGS) $(SRC) -I$(INC_DIR) -L$(LIBFT_DIR) -lft 
-
-#$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC) Makefile
-#gcc $(FLAGS) -c $< -I$(INC_DIR) -Llibft -lft -o $@
+	gcc $(FLAGS) $(SRC) -I$(INC_DIR) -L$(LIBFT_DIR) -lft -o $@
 
 test: re all
-	echo "applying following commands to exec\n" && cat a.sh
-	./a.sh
-#gcc -o $(TEST_OUT) $(TESTFLAGS) $(TEST) -I$(INC_DIR) -Llibft -lft 
-
-# mostrar a Martin
-#update_gitignore:
-#echo '$(TEST_OUT)' >> ../.gitignore
+	@echo "running script.sh"
+	bash ./script.sh
 
 fclean: clean
 	@rm -f $(NAME) 
@@ -64,10 +52,8 @@ fclean: clean
 	@rm -f $(TEST_OUT)
 
 clean:
-	@rm -rf $(OBJ_DIR)
 	@make clean -C $(LIBFT_DIR)
 
 re: fclean all
 
-.PHONY: all clean fclean re obj test
-
+.PHONY: all clean fclean re test
