@@ -1,19 +1,31 @@
 #ifndef PUSH_SWAP_H
 # define PUSH_SWAP_H
 
-# include <unistd.h>
-# include <stdlib.h>
-# include "../libft/includes/libft.h"
+# include "stack.h"
 
-typedef struct s_node
+enum	e_loc
 {
-	int				index;
-	int				value;
+	TOP_A,
+	BOTTOM_A,
+	TOP_B,
+	BOTTOM_B
+};
 
-	struct s_node	*prev;
-	struct s_node	*next;
-}				t_node;
+typedef struct s_chunk
+{
+	enum e_loc	loc;
+	int			size;
+}				t_chunk;
 
-int	err_relay(void);
+typedef struct s_split_dest
+{
+	t_chunk		min;
+	t_chunk		mid;
+	t_chunk		max;
+}				t_split_dest;
+
+
+/* ft variants as utils */
+int	ft_countwords(const char *str, char set);
 
 #endif
