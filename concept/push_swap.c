@@ -1,41 +1,81 @@
 
-#include "../include/push_swap.h"
-#include "../libft/includes/libft.h"
-#include <stdio.h>
+#include "push_swap.h"
+#include "libft/includes/libft.h"
 
-/* UTILS */
+/* SORT */
 
-void	free_data(t_ps *data)
+
+int	value(t_stack *stk, int n)
 {
-	if (data->a.stack)
-		free(data->a.stack);
-	if (data->b.stack)
-		free(data->b.stack);
+	int	i;
+
+	i = stk->top;
+	while (--n > 0)
+		i = next_down(stk, i);
+	return (stk->stack[i]);
 }
 
-void	error(t_ps *data, char *msg)
+void	sort_three_a(t_ps *data)
 {
-	free_data(data);
-	ft_putendl_fd(msg, 2);
-	exit(EXIT_FAILURE);
+	int	first;
+	int	second;
+	int	third;
+
+	first = value(&data->a, 1);
+	second = value(&data->a, 2);
+	third = value(&data->a, 3);
+	if (first)
+		return;
 }
 
-int	new_argc(const char *str, char set)
+int	current_size(t_stack *stk)
 {
-	int	count;
+	if (stk->top == stk->bottom && stk->stack[stk->top] == 0)
+		return (0);
+	if (stk->top > stk->bottom)
+		return ((stk->size - stk->top) + (stk->bottom + 1));
+}
 
-	count = 0;
-	while (*str)
+int	next_down(t_stack *stk, int index)
+{
+	if (current_size(stk) == 0)
+		return (index);
+	if (index == stk->size - 1)
+		return (0);
+	else
+		return (index + 1);
+}
+
+bool	is_sorted(t_ps *data)
+{
+	int	i;
+	int	rank;
+
+	i = data->a.top;
+	rank = 1;
+	while (rank <= data->a.size)
 	{
-		if (*str != set)
-			count++;
-		while (*str && *str != set)
-			str++;
-		while (*str && *str == set)
-			str++;			
+		if (data->a.stack[i] != rank)
+			return (false);
+		rank++;
+		i = next_down(&data->a, i);
 	}
-	return (count);
+	return (true);
 }
+
+void	sort(t_ps *data)
+{
+	if (data->a.size <= 1 || is_sorted(data))
+		return ;
+	else if (data->a.size == 3)
+		sort_three_a(data);
+	else if (data->a.size == 5)
+		sort_five_a(data);
+	else
+		chunk_sort(data);
+	post_sort_optimization(data);
+}
+/* END SORT */
 
 /* INIT */
 
@@ -52,8 +92,7 @@ bool	valid_arg(char *str)
 	{
 		if (!ft_isdigit(*str))
 			return (false);
-		nb = (nb * 10) + *str - '0';
-		str++;
+		nb = (nb * 10) + *str++ - '0';
 	}
 	if (sign == '-')
 		nb = -nb;
@@ -64,8 +103,8 @@ bool	valid_arg(char *str)
 
 void	random_to_rank(int *numbers, int *stack, int size)
 {
-	int	i;
-	int	j;
+	size_t	i;
+	size_t	j;
 	size_t	smaller_than;
 
 	i = 0;
@@ -83,8 +122,8 @@ void	random_to_rank(int *numbers, int *stack, int size)
 
 void	check_duplication(t_ps *data, int *numbers, int size)
 {
-	int	i;
-	int	j;
+	size_t	i;
+	size_t	j;
 
 	i = 0;
 	while (i < size - 1)
@@ -95,7 +134,7 @@ void	check_duplication(t_ps *data, int *numbers, int size)
 			if (numbers[i] == numbers[j])
 			{
 				free(numbers);
-				error(data, "check_duplication: error");
+				error(data);
 			}
 			j++;
 		}
@@ -110,12 +149,12 @@ void	fill_stack(t_ps *data, t_stack *stk, int size, char **arg)
 
 	numbers = malloc(sizeof(int) * size);
 	if (!numbers)
-		error(data, "fill_stack/malloc: error");
+		error(data);
 	i = 0;
 	while (arg[i])
 	{
 		if (!valid_arg(arg[i]))
-			error(data, "fill_stack/valid_arg: error");
+			error(data);
 		numbers[i] = ft_atoi(arg[i]);
 		i++;
 	}
@@ -129,7 +168,7 @@ void	init_stack(t_ps *data, t_stack *stk, int size)
 {
 	stk->stack = malloc(sizeof(int) * size);
 	if (!stk->stack)
-		error(data, "init_stack/malloc: error");
+		error(data);
 	stk->top = 0;
 	stk->bottom = 0;
 	stk->size = 0;
@@ -150,18 +189,20 @@ void	init_data(t_ps *data, int argc, char **argv, bool writing_mode)
 int	main(int argc, char **argv)
 {
 	t_ps	data;
-	char	**str_arg;
+	char	**quotation_str;
 
 	if (argc == 1 || (argc == 2 && !argv[1][0]))
-			return(ft_putendl_fd("argc/argv: error", 2), 1);
+			return(ft_putendl_fd("error", 2), 1);
 	else if (argc == 2)
 	{
-		str_arg = ft_split(argv[1], ' ');
-		init_data(&data, new_argc(argv[1], ' '), str_arg, true);
-		free(str_arg);
+		quotation_str = ft_split(argv[1], ' ');
+		init_data(&data, ft_countwords(argv[1], ' '), quotation_str, true);
+		free(quotation_str);
 	}
 	else
 		init_data(&data, --argc, ++argv, true);
+	sort(&data);
+	print_operations(data.op_list);
 	free_data(&data);
 	exit(EXIT_SUCCESS);
 }
