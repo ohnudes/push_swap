@@ -3,3 +3,4 @@
 **/*.a
 **/.cache
 **/input.txt
+**/push_swap
