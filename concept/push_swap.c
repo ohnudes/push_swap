@@ -55,7 +55,7 @@ void	sort_three_a(t_ps *data)
 	}
 }
 
-bool	is_sorted(t_ps *data)
+bool	is_sorted(const t_ps data)
 {
 	int	i;
 	int	rank;
@@ -90,7 +90,7 @@ int	my_is_sorted(t_ps *data)
 
 void	sort(t_ps *data)
 {
-	if (data->a.size <= 1 || is_sorted(data))
+	if (data->a.size <= 1 || is_sorted(*data))
 		return ;
 	else if (data->a.size == 3)
 		sort_three_a(data);

@@ -7,7 +7,7 @@ LIBFT = ./libft/
 LFT = libft.a
 
 # TEST
-SRC = push_swap.c ft_utils.c
+SRC = push_swap.c utils.c stack_utils.c
 INC = push_swap.h stack.h
 
 # FLAGS
