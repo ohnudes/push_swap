@@ -2,17 +2,30 @@
 #include "push_swap.h"
 #include "libft/includes/libft.h"
 
+/* STACK OPERATIONS */
+void	swap_stk(t_stack *stk)
+{
+	int	next;
+	int	swp;
+
+	next = next_down(stk, stk->top);
+	swp = stk->stack[next];
+	stk->stack[next] = stk->stack[stk->top];
+	*stk->stack = swp;
+}
+
+void	swap_data(t_ps *data);
+void	rotate_stk(t_stack *stk);
+void	rotate_data(t_ps *data);
+void	reverse_rotate_stk(t_stack *stk);
+void	reverse_rotate_data(t_ps *data);
+void	push_stk(t_stack *src, t_stack *dst);
+
 /* SORT */
 
-
-int	value(t_stack *stk, int n)
+void	sort_five_a(t_ps *data)
 {
-	int	i;
 
-	i = stk->top;
-	while (--n > 0)
-		i = next_down(stk, i);
-	return (stk->stack[i]);
 }
 
 void	sort_three_a(t_ps *data)
@@ -21,29 +34,25 @@ void	sort_three_a(t_ps *data)
 	int	second;
 	int	third;
 
-	first = value(&data->a, 1);
+	first = value(&data->a, 1);//returns av = 1
 	second = value(&data->a, 2);
 	third = value(&data->a, 3);
-	if (first)
-		return;
-}
-
-int	current_size(t_stack *stk)
-{
-	if (stk->top == stk->bottom && stk->stack[stk->top] == 0)
-		return (0);
-	if (stk->top > stk->bottom)
-		return ((stk->size - stk->top) + (stk->bottom + 1));
-}
-
-int	next_down(t_stack *stk, int index)
-{
-	if (current_size(stk) == 0)
-		return (index);
-	if (index == stk->size - 1)
-		return (0);
-	else
-		return (index + 1);
+	if (first > second && second < third && first > third)
+		rotate_stk(&data->a);
+	else if (first > second && second < third && first < third)
+		swap_stk(&data->a);
+	else if (first < second && second > third && first > third)
+		reverse_rotate_stk(&data->a);
+	else if (first < second && second > third && first < third)
+	{
+		swap_stk(&data->a);
+		rotate_stk(&data->a);
+	}
+	else if (first > second && second > third)
+	{
+		swap_stk(&data->a);
+		reverse_rotate_stk(&data->a);
+	}
 }
 
 bool	is_sorted(t_ps *data)
@@ -51,14 +60,30 @@ bool	is_sorted(t_ps *data)
 	int	i;
 	int	rank;
 
-	i = data->a.top;
+	i = data->a.top;//int representing index 0 of stack.
 	rank = 1;
-	while (rank <= data->a.size)
+	while (rank <= data->a.size)//total args to order
 	{
-		if (data->a.stack[i] != rank)
+		if (data->a.stack[i] != rank)//check if ranked value corresponds to rank.
 			return (false);
-		rank++;
-		i = next_down(&data->a, i);
+		rank++;//rank +1, given natural increments
+		i = next_down(&data->a, i);//since the stk[0] isnt fixed but 
+								   //rather dynamic, 'i' can't be
+								   //naturally incremented
+	}
+	return (true);
+}
+/* MY TAKE */
+int	my_is_sorted(t_ps *data)
+{
+	int	i;
+
+	i = data->a.top + 1;
+	while (i <= data->a.size)
+	{
+		if (data->a.stack[i - 1] != i)
+			return (0);
+		i++;
 	}
 	return (true);
 }

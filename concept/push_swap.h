@@ -26,5 +26,10 @@ typedef struct s_split_dest
 
 /* ft variants as utils */
 int	ft_countwords(const char *str, char set);
+void	error(t_ps *data);
 
+/* tools to navigate stack */
+int	value(t_stack *stk, int n);
+int	current_size(t_stack *stk);
+int	next_down(t_stack *stk, int index);
 #endif
